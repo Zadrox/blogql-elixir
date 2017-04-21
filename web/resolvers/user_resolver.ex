@@ -40,21 +40,6 @@ defmodule BlogqlElixir.UserResolver do
         false -> {:ok, %{:errors => [%{:key => "user", :value => "Not Authorized"}]}}
         {:error, changeset} -> {:ok, %{:errors => render_errors(changeset.errors)}}
     end
-
-    # case Repo.get(User, id) do
-    #   nil -> 
-    #     {:ok, %{:errors => [%{:key => "id", :value => "User id #{id} not found"}]}}
-    #   user ->
-    #     changeset = User.update_changeset(user, user_params)
-    #     case Repo.update(changeset) do
-    #       {:ok, user} ->
-    #         {:ok, %{:user => user}}
-    #       {:error, changeset} ->
-    #         errors = render_errors(changeset.errors)
-
-    #         {:ok, %{:errors => errors}}
-    #     end
-    # end
   end
 
   def update(%{id: id, password: password_params}, %{context: %{current_user: current_user}}) do
@@ -68,7 +53,7 @@ defmodule BlogqlElixir.UserResolver do
         nil -> {:ok, %{:errors => [%{:key => "id", :value => "User id #{id} not found"}]}}
         false -> {:ok, %{:errors => [%{:key => "user", :value => "Not Authorized"}]}}
         {:error, changeset} -> {:ok, %{:errors => render_errors(changeset.errors)}}       
-      end
+    end
   end
 
   def login(params, _info) do
