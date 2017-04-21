@@ -29,10 +29,16 @@ defmodule BlogqlElixir.Schema.Types do
     field :title, :string
     field :body, :string
     field :slug, :string
+    field :tags, list_of(:tag), resolve: assoc(:tags)
     field :inserted_at, :float
     field :updated_at, :float
     field :user, :user, resolve: assoc(:user)
     field :comments, list_of(:comment), resolve: assoc(:comments)
+  end
+
+  object :tag do
+    field :id, :id
+    field :name, :string
   end
 
   object :comment do
@@ -72,6 +78,7 @@ defmodule BlogqlElixir.Schema.Types do
   input_object :post_params do
     field :title, :string
     field :body, :string
+    field :tags, list_of(non_null(:string))
   end
 
   input_object :create_user_params do
