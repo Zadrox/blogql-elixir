@@ -16,8 +16,8 @@ defmodule BlogqlElixir.PostResolver do
     {:ok, posts}
   end
 
-  def find(%{"post_id": post_id}, _) do
-    post = Repo.get!(Post, post_id)
+  def find(%{"slug": slug}, _) do
+    post = Repo.get_by(Post, slug: slug)
 
     {:ok, post}
   end

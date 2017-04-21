@@ -6,11 +6,19 @@ defmodule BlogqlElixir.Schema.Types do
     field :token, :string
     field :error, :string
   end
- 
+
   object :user do
     field :id, :id
     field :name, :string
+    field :bio, :string
+    field :username, :string
+    field :posts, list_of(:post), resolve: assoc(:posts)
+  end
+
+  object :private_user do
+    field :id, :id
     field :email, :string
+    field :name, :string
     field :bio, :string
     field :username, :string
     field :posts, list_of(:post), resolve: assoc(:posts)
@@ -20,6 +28,7 @@ defmodule BlogqlElixir.Schema.Types do
     field :id, :id
     field :title, :string
     field :body, :string
+    field :slug, :string
     field :inserted_at, :float
     field :updated_at, :float
     field :user, :user, resolve: assoc(:user)

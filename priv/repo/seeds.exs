@@ -26,11 +26,13 @@ for _ <- 1..5 do
 end
  
 for _ <- 1..15 do
-  Repo.insert!(%Post{
+  %Post{}
+  |> Post.changeset(%{
     title: Faker.Lorem.sentence,
     body: Faker.Lorem.paragraph,
     user_id: [2, 3, 4, 5, 6] |> Enum.take_random(1) |> hd
   })
+  |> Repo.insert!
 end
 
 for _ <- 1..60 do

@@ -11,7 +11,8 @@ defmodule BlogqlElixir.Schema do
     end
 
     field :post, type: :post do
-      arg :post_id, non_null(:id)
+      # arg :post_id, non_null(:id)
+      arg :slug, non_null(:string)
 
       resolve &BlogqlElixir.PostResolver.find/2
     end
