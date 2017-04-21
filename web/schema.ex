@@ -28,6 +28,10 @@ defmodule BlogqlElixir.Schema do
 
       resolve &BlogqlElixir.UserResolver.find/2
     end
+
+    field :me, type: :me_result do
+      resolve &BlogqlElixir.UserResolver.me/2
+    end
   end
 
   mutation do

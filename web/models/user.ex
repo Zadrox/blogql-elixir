@@ -25,7 +25,8 @@ defmodule BlogqlElixir.User do
     struct
     |> cast(params, [:email, :bio, :username, :name])
     |> validate_required([:username, :email])
-    |> validate_format(:email, ~r/@/)
+    |> validate_format(:email, ~r/@/, message: "Email is not valid format")
+    |> validate_format(:username, ~r/^[a-z\d]{4,}$/i, message: "Username contains invalid characters")
     |> unique_constraint(:username, name: :users_username_index)
     |> unique_constraint(:email, name: :users_email_index)
   end
@@ -35,6 +36,8 @@ defmodule BlogqlElixir.User do
     |> cast(params, [:email, :password, :password_confirmation, :username])
     |> validate_required([:username, :email, :password, :password_confirmation])
     |> validate_confirmation(:password, message: "Passwords do not match")
+    |> validate_format(:email, ~r/@/, message: "Email is not valid format")
+    |> validate_format(:username, ~r/^[a-z\d]{3,}$/i, message: "Username contains invalid characters")
     |> unique_constraint(:email, name: :users_email_index)
     |> unique_constraint(:username, name: :users_username_index)
     |> put_pass_hash

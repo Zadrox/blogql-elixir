@@ -15,7 +15,7 @@ defmodule BlogqlElixir.Schema.Types do
     field :posts, list_of(:post), resolve: assoc(:posts)
   end
 
-  object :private_user do
+  object :me_user do
     field :id, :id
     field :email, :string
     field :name, :string
@@ -59,6 +59,11 @@ defmodule BlogqlElixir.Schema.Types do
     field :errors, list_of(non_null(:error))
   end
 
+  object :me_result do
+    field :user, :me_user
+    field :errors, list_of(non_null(:error))
+  end
+
   object :comment_result do
     field :comment, :comment
     field :errors, list_of(non_null(:error))
@@ -72,6 +77,7 @@ defmodule BlogqlElixir.Schema.Types do
   input_object :create_user_params do
     field :email, non_null(:string)
     field :password, non_null(:string)
+    field :password_confirmation, non_null(:string)
     field :username, non_null(:string)
   end
 

@@ -15,6 +15,20 @@ defmodule BlogqlElixir.UserResolver do
     end
   end
 
+  def me(_, %{context: %{current_user: current_user}}) do
+    case Repo.get(User, current_user.id) do
+      nil ->
+        {:error, "This should never happen!"}
+      user ->
+        {:ok, %{:user => user}}
+
+    end
+  end
+
+  def me(_, _) do
+    {:error, "No Auth Token Supplied!"}
+  end
+
   def create(%{user: user_params}, _info) do
     user = %User{}
     |> User.registration_changeset(user_params)
