@@ -37,7 +37,8 @@ defmodule BlogqlElixir.PostResolver do
   end
 
   def update(%{"post": post_params, "id": post_id}, %{context: %{current_user: current_user}}) do
-    with post when not is_nil(post) <- Repo.get(Post, post_id),
+    with post when not is_nil(post) <- Repo.get!(Post, post_id) 
+                                         |> Repo.preload(:tags),
          true <- post.user_id == current_user.id or current_user.admin,
          changeset <- post |> Post.changeset(post_params),
          {:ok, post} <- Repo.update(changeset)

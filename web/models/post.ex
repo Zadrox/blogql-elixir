@@ -11,7 +11,8 @@ defmodule BlogqlElixir.Post do
 
     belongs_to :user, BlogqlElixir.User
     has_many :comments, BlogqlElixir.Comment, on_delete: :delete_all
-    many_to_many :tags, Tag, join_through: BlogqlElixir.PostTag
+    many_to_many :tags, Tag, join_through: BlogqlElixir.PostTag, on_replace: :delete
+    many_to_many :likes, BlogqlElixir.User, join_through: BlogqlElixir.LikePost
 
     timestamps()
   end
@@ -22,11 +23,11 @@ defmodule BlogqlElixir.Post do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:title, :body, :user_id])
-    |> validate_required([:title, :body, :user_id]) 
+    |> validate_required([:title, :body, :user_id])
     |> foreign_key_constraint(:user_id)
     |> gen_slug
     |> unique_constraint(:slug, name: :posts_slug_index)
-    |> put_assoc(:tags, parse_tags(params))
+    |> maybe_insert_tags(params)
   end
 
   defp gen_slug(changeset) do
@@ -39,8 +40,16 @@ defmodule BlogqlElixir.Post do
     end
   end
 
-  defp parse_tags(params)  do
-    (params.tags || "")
+  defp maybe_insert_tags(changeset, params) do
+    if Map.has_key?(params, :tags) do
+      put_assoc(changeset, :tags, parse_tags(params))
+    else
+      changeset
+    end
+  end
+
+  defp parse_tags(params) do
+    (params.tags || [])
     |> Enum.map(&String.downcase/1)
     |> Enum.map(&String.trim/1)
     |> Enum.reject(& &1 == "")
@@ -52,7 +61,7 @@ defmodule BlogqlElixir.Post do
   end
   
   defp insert_and_get_all(names) do
-    maps = Enum.map(names, &%{name: &1, inserted_at: timestamp, updated_at: timestamp})
+    maps = Enum.map(names, &%{name: &1, inserted_at: timestamp(), updated_at: timestamp()})
     Repo.insert_all Tag, maps, on_conflict: :nothing
     Repo.all(from t in Tag, where: t.name in ^names)
   end
