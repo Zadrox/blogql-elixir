@@ -30,7 +30,21 @@ defmodule BlogqlElixir.Schema.Types do
     field :body, :string
     field :slug, :string
     field :tags, list_of(:tag), resolve: assoc(:tags)
+    field :liked, :boolean do 
+      resolve fn post, _, absinthe ->
+        batch(
+          {BlogqlElixir.LikePostResolver, :likes_by_id, absinthe.context.current_user},
+          post.id, 
+          fn batch_results ->
+            case Map.get(batch_results, post.id) do
+              nil -> {:ok, false}
+              _ -> {:ok, true}
+            end
+        end)
+      end
+    end
     field :inserted_at, :float
+    field :like_count, :integer
     field :updated_at, :float
     field :user, :user, resolve: assoc(:user)
     field :comments, list_of(:comment), resolve: assoc(:comments)

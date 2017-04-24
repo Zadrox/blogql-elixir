@@ -13,7 +13,9 @@ defmodule BlogqlElixir.User do
     field :password_confirmation, :string, virtual: true
     field :current_password, :string, virtual: true
     field :password_hash, :string
+    
     has_many :posts, BlogqlElixir.Post
+    many_to_many :likes, BlogqlElixir.Post, join_through: BlogqlElixir.LikePost
 
     timestamps()
   end
