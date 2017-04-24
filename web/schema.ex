@@ -94,6 +94,18 @@ defmodule BlogqlElixir.Schema do
       resolve &BlogqlElixir.CommentResolver.delete/2
     end
 
+    field :create_like, type: :boolean do
+      arg :post_id, non_null(:integer)
+
+      resolve &BlogqlElixir.LikePostResolver.create/2
+    end
+
+    field :delete_like, type: :boolean do
+      arg :post_id, non_null(:integer)
+
+      resolve &BlogqlElixir.LikePostResolver.delete/2
+    end
+
     field :login, type: :session do
       arg :email, non_null(:string)
       arg :password, non_null(:string)

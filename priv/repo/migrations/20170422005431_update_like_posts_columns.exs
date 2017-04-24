@@ -22,9 +22,9 @@ defmodule BlogqlElixir.Repo.Migrations.UpdateLikePostsColumns do
       modify :user_id, references(:users, on_delete: :delete_all)
     end
 
-    create index(:posts_tags, [:post_id, :tag_id])
+    create unique_index(:posts_tags, [:post_id, :tag_id])
     create index(:like_posts, [:post_id])
     create index(:like_posts, [:user_id])
-    create index(:like_posts, [:user_id, :post_id])
+    create unique_index(:like_posts, [:user_id, :post_id])
   end
 end

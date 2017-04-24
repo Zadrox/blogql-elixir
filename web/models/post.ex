@@ -8,6 +8,7 @@ defmodule BlogqlElixir.Post do
     field :title, :string
     field :body, :string
     field :slug, :string
+    field :like_count, :integer, default: 0
 
     belongs_to :user, BlogqlElixir.User
     has_many :comments, BlogqlElixir.Comment, on_delete: :delete_all
@@ -28,6 +29,13 @@ defmodule BlogqlElixir.Post do
     |> gen_slug
     |> unique_constraint(:slug, name: :posts_slug_index)
     |> maybe_insert_tags(params)
+  end
+
+  def like_changeset(struct, params) do
+    struct
+    |> cast(params, [:like_count])
+    |> validate_required([:like_count])
+    |> validate_number(:like_count, greater_than_or_equal_to: 0)
   end
 
   defp gen_slug(changeset) do
