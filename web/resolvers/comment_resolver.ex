@@ -1,6 +1,41 @@
 defmodule BlogqlElixir.CommentResolver do
   alias BlogqlElixir.Repo
   alias BlogqlElixir.Comment
+  
+  import Ecto.Query
+
+  def all(%{"user_id": user_id}, ids) do
+    comments = Repo.all(from c in Comment, 
+      where: c.post_id in ^ids, 
+      where: c.user_id == ^user_id,
+      select: c)
+
+    Enum.reduce(comments, %{}, fn a, acc -> 
+      result = Map.get_and_update(acc, a.post_id, fn current_val ->
+        case current_val do
+          nil -> {nil, [a]}
+          val -> {val, val ++ [a]}
+        end
+      end)
+      elem(result, 1) 
+    end)
+  end
+
+  def all(_, ids) do
+    comments = Repo.all(from c in Comment, 
+      where: c.post_id in ^ids,
+      select: c)
+
+    Enum.reduce(comments, %{}, fn a, acc -> 
+      result = Map.get_and_update(acc, a.post_id, fn current_val ->
+        case current_val do
+          nil -> {nil, [a]}
+          val -> {val, val ++ [a]}
+        end
+      end)
+      elem(result, 1) 
+    end)
+  end
 
   def create(%{"comment": comment_params, "post_id": post_id}, 
     %{context: %{current_user: %{id: id}}}) do

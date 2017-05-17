@@ -30,12 +30,13 @@ for _ <- 1..15 do
   |> Post.changeset(%{
     title: Faker.Lorem.sentence,
     body: Faker.Lorem.paragraph,
+    tags: ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"] |> Enum.take_random(3),
     user_id: [2, 3, 4, 5, 6] |> Enum.take_random(1) |> hd
   })
   |> Repo.insert!
 end
 
-for _ <- 1..60 do
+for _ <- 1..100 do
   Repo.insert!(%Comment{
     body: Faker.Lorem.paragraph,
     user_id: [2, 3, 4, 5, 6] |> Enum.take_random(1) |> hd,

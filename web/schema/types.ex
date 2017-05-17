@@ -47,12 +47,26 @@ defmodule BlogqlElixir.Schema.Types do
     field :like_count, :integer
     field :updated_at, :float
     field :user, :user, resolve: assoc(:user)
-    field :comments, list_of(:comment), resolve: assoc(:comments)
+    field :comments, list_of(:comment) do 
+      arg :user_id, :id
+      resolve fn post, args, absinthe -> 
+        batch(
+          {BlogqlElixir.CommentResolver, :all, args},
+          post.id,
+          fn batch_results ->
+            case Map.get(batch_results, post.id) do
+              nil -> {:ok, []}
+              results -> {:ok, results}
+            end
+        end)
+      end
+    end
   end
 
   object :tag do
-    field :id, :id
+    field :id, :id  
     field :name, :string
+    field :posts, list_of(:post), resolve: assoc(:posts)
   end
 
   object :comment do
