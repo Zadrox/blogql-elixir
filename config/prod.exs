@@ -17,7 +17,7 @@ config :blogql_elixir, BlogqlElixir.Endpoint,
   cache_static_manifest: "priv/static/manifest.json",
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
-config :hello_phoenix, BlogqlElixir.Repo,
+config :blogql_elixir, BlogqlElixir.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
